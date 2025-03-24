@@ -1,8 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Data;
+﻿using System;
+using System.Linq;
 using System.Windows.Forms;
-
+using Microsoft.Data.SqlClient; // Keeping SqlClient reference
+using Pet_Management.Models; // Namespace for generated EF models
 
 namespace Pet_Management
 {
@@ -21,43 +21,30 @@ namespace Pet_Management
             // Console application part (runs after closing the form)
             Console.WriteLine("Hello, World!");
 
-            // Corrected connection string
+            // Connection string for reference (Not used in EF directly)
             string connectionString = @"Data Source=MEHTAAB\MSSQLSERVER02;Initial Catalog=Pet Management;Integrated Security=True;TrustServerCertificate=True";
+            Console.WriteLine("Using database: " + connectionString);
 
-            using (SqlConnection conn = new SqlConnection(connectionString)) // Initialize connection
+            // Database operations using Entity Framework
+            using (var context = new PetManagementContext()) // Database Context
             {
                 try
                 {
-                    conn.Open(); // Open connection
-                    Console.WriteLine("Database connection successful!");
+                    Console.WriteLine("Fetching owners from database using EF...");
 
-                    // Create SQL query
-                    string query = "SELECT * FROM owners";
+                    var owners = context.Owners.ToList(); // Fetch data from "owners" table
 
-                    // Create DataAdapter
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-
-                    // Create DataTable
-                    DataTable dataTable = new DataTable();
-
-                    // Fill DataTable with data from database
-                    adapter.Fill(dataTable);
-
-                    // Loop through DataTable rows
-                    foreach (DataRow row in dataTable.Rows)
+                    Console.WriteLine("Owners List:");
+                    foreach (var owner in owners)
                     {
-                        Console.WriteLine($"{row["owner_id"]} - {row["name"]}");
+                        Console.WriteLine($"{owner.OwnerId} - {owner.Name}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Connection failed: " + ex.Message);
+                    Console.WriteLine("Error: " + ex.Message);
                 }
             }
         }
     }
 }
-
-
-
-
