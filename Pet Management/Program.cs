@@ -17,6 +17,7 @@ namespace Pet_Management
 
             // Run the login form
             Application.Run(new LoginForm());
+            Application.Run(new SearchForm());  // Make sure SearchForm is being run here
 
             // Console application part (runs after closing the form)
             Console.WriteLine("Hello, World!");
